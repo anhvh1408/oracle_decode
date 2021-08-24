@@ -1,0 +1,47 @@
+# oracle_decode
+
+import builtins as p
+
+def odecode(column, *params):
+  try:
+    f= []
+    index = 0
+    while index <= len(params):
+      P = params[index]
+      Q = column
+      if P == Q:
+        break
+      index += 1
+      params[index + 1]
+    f.append(params[index + 1])
+    x = p.max([i for (i, item) in enumerate(f, start=0)])
+    return str(f[x])
+  except:
+    y = p.max([i for (i, item) in enumerate(params, start=0)])
+    return str(params[y])
+
+decode = udf(odecode)
+
+#test:
+
+a = ["A", "100", "C", "2", "D", "3", "K", "4", "FAIL"]
+print(str(odecode("A", *a)))
+#100
+
+
+#create df:
+
+
+schema = StructType([StructField("language", StringType(), True), 
+                 StructField('users_count',StringType(),True), 
+                 StructField('status',StringType(),True)])
+data = (("A",None,"1"), ("Python", "100000","2"), ("Scala", "3000","3"))
+rdd = spark.sparkContext.parallelize(data)
+df = spark.createDataFrame(data=data,schema=schema)
+df.show()
+
+
+#loi khong chay duoc 
+df.withColumn("test", decode(col("language"), *a)).show()  
+
+#cannot resolve '`A`' given input columns: [language, status, users_count];
